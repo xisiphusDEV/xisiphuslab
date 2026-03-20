@@ -187,18 +187,18 @@ of immersive computing and intelligent systems.
 <script src="assets/js/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
 <script src="assets/js/browser.min.js"></script>
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 
 <script>
     let scene, camera, renderer, points;
-    const particleCount = 6000; // 입자 개수를 늘려 두께감 확보
+    const particleCount = 4000;
     const targetCoords = [];
     const currentCoords = [];
 
     function initXAnimation() {
-        // 장면 및 카메라 설정
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 5;
@@ -215,40 +215,26 @@ of immersive computing and intelligent systems.
         const positions = new Float32Array(particleCount * 3);
 
         for (let i = 0; i < particleCount; i++) {
-            // 초기 무질서 배치
             positions[i * 3] = (Math.random() - 0.5) * 12;
             positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
             positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
             currentCoords.push({ x: positions[i * 3], y: positions[i * 3 + 1], z: positions[i * 3 + 2] });
 
-            // *** 수정 포인트 1: 'X' 형태의 두께감 강화 ***
             let tx, ty, tz;
-            const branch = i < particleCount * 0.5 ? 1 : -1; // 두 개의 선으로 나눔
-            
-            // 기본 궤적 수식 (Blender Geometry Nodes의 수학적 모델링)
-            const t = (Math.random() - 0.5) * 4.5; // X의 길이
-            tx = t;
-            ty = branch * t * 1.2; // 기울기
-            
-            // 궤적 주변으로 입자를 불규칙하게 분포시켜 두께감 확보
-            // (Blender의 'Noise Texture'나 'Random Value'와 유사한 효과)
-            tx += (Math.random() - 0.5) * 0.4; // X축 방향 두께
-            ty += (Math.random() - 0.5) * 0.4; // Y축 방향 두께
-            tz = (Math.random() - 0.5) * 0.3; // Z축 방향 깊이감
-            
+            if (i < particleCount * 0.5) {
+                tx = (Math.random() - 0.5) * 4;
+                ty = tx * 1.3;
+                tz = (Math.random() - 0.5) * 0.1;
+            } else {
+                tx = (Math.random() - 0.5) * 4;
+                ty = -tx * 1.3;
+                tz = (Math.random() - 0.5) * 0.1;
+            }
             targetCoords.push({ x: tx, y: ty, z: tz });
         }
 
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        
-        // 네온 시안 컬러 및 입자 설정
-        const material = new THREE.PointsMaterial({ 
-            color: 0x00f2fe, 
-            size: 0.02, // 점 크기를 살짝 키워 묵직함 부여
-            transparent: true, 
-            blending: THREE.AddBlending,
-            depthTest: false
-        });
+        const material = new THREE.PointsMaterial({ color: 0x00f2fe, size: 0.015, transparent: true, blending: THREE.AddBlending });
         points = new THREE.Points(geometry, material);
         scene.add(points);
 
@@ -257,21 +243,15 @@ of immersive computing and intelligent systems.
 
     function animatePoints() {
         const positions = points.geometry.attributes.position.array;
-        
-        // *** 수정 포인트 2: 부드러운 화이트 전환 및 콘텐츠 노출 타임라인 ***
-        const tl = gsap.timeline({ 
-            onComplete: finishLoading,
-            delay: 0.5 // 연출 시작 전 미세한 지연으로 기대감 조성
-        });
+        const tl = gsap.timeline({ onComplete: finishLoading });
 
-        // 입자 수렴 애니메이션
         for (let i = 0; i < particleCount; i++) {
             tl.to(currentCoords[i], {
-                duration: 3.0 + Math.random() * 1.5, // 수렴 속도에 변주를 주어 역동성 표현
+                duration: 2.5,
                 x: targetCoords[i].x,
                 y: targetCoords[i].y,
                 z: targetCoords[i].z,
-                ease: "expo.inOut", // 정밀하게 Snap되는 느낌 (금 기운)
+                ease: "expo.inOut",
                 onUpdate: () => {
                     positions[i * 3] = currentCoords[i].x;
                     positions[i * 3 + 1] = currentCoords[i].y;
@@ -285,53 +265,18 @@ of immersive computing and intelligent systems.
                 }
             }, 0);
         }
-
-        // *** 수정 포인트 3: 부드러운 화이트 전환 연출 ***
-        // 1. 점들이 'X'로 모인 후, 순백의 빛이 화면을 채움 (Fade In)
-        tl.to("body", { 
-            duration: 1.5, 
-            backgroundColor: "#ffffff", // 하얀 배경으로 전환
-            ease: "power2.inOut"
-        }, "-=1.0"); // 애니메이션 완료 1초 전부터 빛이 차오름
-
-        // 2. 점들을 서서히 빛 속으로 사라지게 함 (Fade Out)
-        tl.to(points.material, { 
-            duration: 1.0, 
-            opacity: 0, 
-            ease: "power2.in"
-        }, "-=0.5");
-
-        // 3. 로딩 UI 페이드 아웃
-        tl.to("#loading-ui", { duration: 0.5, opacity: 0, pointerEvents: "none" }, "-=0.5");
     }
 
     function finishLoading() {
-        // *** 수정 포인트 4: 회사 홈페이지 내용 부드럽게 노출 ***
+        gsap.to("#loading-ui", { duration: 0.5, opacity: 0 });
         gsap.to("#webgl-canvas", { 
             duration: 1.0, 
             opacity: 0, 
             onComplete: () => {
-                const canvas = document.getElementById('webgl-canvas');
-                if(canvas) canvas.style.display = 'none';
-                
-                // body의 배경색을 다시 원래대로 (필요시 수정)
-                document.body.style.backgroundColor = ""; // main.css의 배경색 사용
-
+                document.getElementById('webgl-canvas').style.display = 'none';
                 document.body.classList.remove('is-loading');
-                document.body.classList.remove('is-preload');
                 
-                // 인라인 스타일로 한 번 더 확실하게 노출 (main.css와 조화)
-                const sections = ['#header', '#main', '#footer'];
-                sections.forEach(sel => {
-                    const el = document.querySelector(sel);
-                    if(el) {
-                        el.style.opacity = "1";
-                        el.style.visibility = "visible";
-                        el.style.transition = "opacity 1.5s ease-in-out, visibility 1.5s ease-in-out";
-                    }
-                });
-
-                // *** 핵심: 연출이 완전히 끝난 후 main.js를 동적으로 로드하여 실행 ***
+                // *** 핵심: 연출이 끝난 후 main.js를 동적으로 로드하여 실행 ***
                 const script = document.createElement('script');
                 script.src = 'assets/js/main.js';
                 document.body.appendChild(script);
@@ -341,11 +286,10 @@ of immersive computing and intelligent systems.
 
     function renderLoop() {
         requestAnimationFrame(renderLoop);
-        if(points) points.rotation.y += 0.002; // 입체감 부여를 위한 미세한 회전
+        if(points) points.rotation.y += 0.002;
         renderer.render(scene, camera);
     }
 
-    // 문서 로드 완료 시 실행
     window.addEventListener('load', () => {
         initXAnimation();
         renderLoop();
