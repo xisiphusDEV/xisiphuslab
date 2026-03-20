@@ -9,45 +9,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="XisiphusLAB builds XR, AI, and Digital Twin technologies for intelligent systems." />
     <link rel="stylesheet" href="assets/css/main.css" />
-<style>
-    /* ... 기존 코드 생략 ... */
+    <style>
+        /* 로딩 연출 스타일 */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: #050505;
+        }
 
-    #loading-ui {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        pointer-events: none;
-        color: #98FF3D; /* 네온 그린 적용 */
-        font-family: 'Courier New', monospace;
-        text-shadow: 0 0 10px rgba(152, 255, 61, 0.5);
-    }
+        #loading-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            pointer-events: none;
+            color: #98FF3D; /* 네온 그린 적용 */
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(152, 255, 61, 0.5);
+        }
 
-    /* 이 부분을 수정합니다 */
-    .coord-overlay {
-        position: absolute; /* 중앙 정렬에서 벗어나 절대 좌표 사용 */
-        bottom: 30px;      /* 바닥에서 30px 띄움 */
-        right: 30px;       /* 우측에서 30px 띄움 */
-        font-size: 11px;
-        text-align: right;
-        line-height: 1.5;
-        opacity: 0.8;      /* 조금 더 선명하게 조정 */
-        letter-spacing: 1px;
-    }
+        .status-box {
+            text-align: center;
+            letter-spacing: 0.2em;
+        }
 
-    .status-box {
-        text-align: center;
-        letter-spacing: 0.2em;
-        /* 중앙에는 "SOLVING THE X..."만 남게 됩니다 */
-    }
+        /* 좌표 오버레이: 우측 하단 고정 */
+        .coord-overlay {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 11px;
+            text-align: right;
+            line-height: 1.5;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
 
-    /* ... 기존 코드 생략 ... */
-</style>
+        /* 초기 상태 콘텐츠 숨김 */
+        body.is-loading #header, 
+        body.is-loading #main, 
+        body.is-loading #footer {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
+        #header, #main, #footer {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 2s ease-in-out, visibility 2s ease-in-out;
+        }
+    </style>
 </head>
 
 <body class="is-preload is-loading">
@@ -64,111 +84,9 @@
     </div>
 </div>
 
-<section id="header">
-    <div class="inner">
-        <img src="images/logo_circle.png" alt="XisiphusLAB Logo" width="120">
-        <h1>XisiphusLAB</h1>
-            <p>
-            디지털 트윈 · 인공지능 · XR 기술을 기반으로<br>
-            차세대 시뮬레이션 시스템을 연구합니다.
-            </p><br>
-        <ul class="actions special">
-        <li><a href="#main" class="button">Explore Our Work</a></li>
-        </ul>
-    </div>
-</section>
-
-<section id="main">
-
-<header class="major container medium">
-    <h2>
-    Technology Research and Development<br>
-    for Next Generation Intelligent Systems
-    </h2>
-    <p>
-    XisiphusLAB explores emerging technologies that bridge the physical and digital worlds.<br>
-    Our research focuses on immersive computing, intelligent systems, and digital simulations.
-    </p>
-</header>
-
-<div class="box alt container">
-
-<section class="feature left">
-    <a class="image icon solid fa-vr-cardboard">
-        <img src="images/pic01.jpg" alt="">
-    </a>
-    <div class="content">
-        <h3>XR Development</h3>
-        <p>
-        We develop immersive applications using Virtual Reality, Augmented Reality,
-        and Mixed Reality technologies. Our XR systems enable training,
-        visualization, and simulation for complex environments.
-        </p>
-    </div>
-</section>
-
-<section class="feature right">
-    <a class="image icon solid fa-brain">
-        <img src="images/pic02.jpg" alt="">
-    </a>
-    <div class="content">
-        <h3>Artificial Intelligence</h3>
-        <p>
-        XisiphusLAB develops intelligent algorithms and AI-driven systems
-        that enhance perception, decision-making, and automation.
-        </p>
-    </div>
-</section>
-
-<section class="feature left">
-    <a class="image icon solid fa-network-wired">
-        <img src="images/pic03.jpg" alt="">
-    </a>
-    <div class="content">
-        <h3>Digital Twin Systems</h3>
-        <p>
-        We create digital replicas of real-world environments to simulate,
-        monitor, and analyze complex systems.
-        </p>
-    </div>
-</section>
-
-</div>
-
-<div class="box container">
-<header>
-<h2>About XisiphusLAB</h2>
-</header>
-<p>
-XisiphusLAB is a technology research initiative focused on the convergence
-of immersive computing and intelligent systems.
-</p>
-</div>
-
-<div class="box container">
-<header>
-<h2>Contact</h2>
-</header>
-<ul>
-<li>Email: xisiphus@gmail.com</li>
-<li>Location: Republic of Korea</li>
-</ul>
-</div>
-
-</section>
-
-<section id="footer">
-<ul class="icons">
-<li><a href="#" class="icon brands fa-github"></a></li>
-<li><a href="#" class="icon brands fa-linkedin"></a></li>
-</ul>
-<div class="copyright">
-<ul class="menu">
-<li>© 2025 XisiphusLAB</li>
-<li>Technology Research & Development</li>
-</ul>
-</div>
-</section>
+<section id="header">...</section>
+<section id="main">...</section>
+<section id="footer">...</section>
 
 <script src="assets/js/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -179,7 +97,7 @@ of immersive computing and intelligent systems.
 
 <script>
     let scene, camera, renderer, points;
-    const particleCount = 6000; 
+    const particleCount = 6500; // 두께감을 위해 입자 수 증설
     const targetCoords = [];
     const currentCoords = [];
 
@@ -200,30 +118,36 @@ of immersive computing and intelligent systems.
         const positions = new Float32Array(particleCount * 3);
 
         for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 12;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+            positions[i * 3] = (Math.random() - 0.5) * 15;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 15;
             currentCoords.push({ x: positions[i * 3], y: positions[i * 3 + 1], z: positions[i * 3 + 2] });
 
             let tx, ty, tz;
             const branch = i < particleCount * 0.5 ? 1 : -1;
-            const t = (Math.random() - 0.5) * 4.5;
+            const t = (Math.random() - 0.5) * 4.8;
             tx = t;
             ty = branch * t * 1.2;
-            tx += (Math.random() - 0.5) * 0.4;
-            ty += (Math.random() - 0.5) * 0.4;
-            tz = (Math.random() - 0.5) * 0.3;
+            
+            // X의 두께감 강화
+            tx += (Math.random() - 0.5) * 0.5; 
+            ty += (Math.random() - 0.5) * 0.5;
+            tz = (Math.random() - 0.5) * 0.4;
+            
             targetCoords.push({ x: tx, y: ty, z: tz });
         }
 
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        // 포인트 컬러 적용: 0x98FF3D (네온 그린)
         const material = new THREE.PointsMaterial({ 
-            color: 0x00f2fe, 
-            size: 0.02, 
+            color: 0x98FF3D, 
+            size: 0.022, 
             transparent: true, 
             blending: THREE.AddBlending,
             depthTest: false
         });
+        
         points = new THREE.Points(geometry, material);
         scene.add(points);
         animatePoints();
@@ -231,12 +155,8 @@ of immersive computing and intelligent systems.
 
     function animatePoints() {
         const positions = points.geometry.attributes.position.array;
-        const tl = gsap.timeline({ 
-            onComplete: finishLoading,
-            delay: 0.5 
-        });
+        const tl = gsap.timeline({ onComplete: finishLoading });
 
-        // 1. 입자 수렴
         for (let i = 0; i < particleCount; i++) {
             tl.to(currentCoords[i], {
                 duration: 3.5,
@@ -258,30 +178,23 @@ of immersive computing and intelligent systems.
             }, 0);
         }
 
-        // 2. 화이트 아웃 연출 (가장 중요한 부분)
-        tl.to("body", { duration: 1.5, backgroundColor: "#ffffff", ease: "power2.inOut" }, "-=1.2");
-        tl.to(points.material, { duration: 1.0, opacity: 0, ease: "power2.in" }, "-=0.8");
-        tl.to("#loading-ui", { duration: 0.8, opacity: 0 }, "-=0.8");
+        tl.to("body", { duration: 1.5, backgroundColor: "#ffffff", ease: "power2.inOut" }, "-=1.0");
+        tl.to(points.material, { duration: 1.0, opacity: 0, ease: "power2.in" }, "-=0.6");
+        tl.to("#loading-ui", { duration: 0.8, opacity: 0 }, "-=0.6");
     }
 
     function finishLoading() {
-        // 캔버스 제거 전 콘텐츠를 먼저 투명하게 준비
-        const sections = ['#header', '#main', '#footer'];
-        
         gsap.to("#webgl-canvas", { 
             duration: 1.2, 
             opacity: 0, 
-            ease: "power2.out",
             onStart: () => {
-                // 캔버스가 사라지기 시작할 때 클래스를 제거하여 CSS 간섭 최소화
                 document.body.classList.remove('is-loading');
                 document.body.classList.remove('is-preload');
-                document.body.style.backgroundColor = ""; // 원래 배경색으로 부드럽게 복구
+                document.body.style.backgroundColor = ""; 
             },
             onComplete: () => {
                 document.getElementById('webgl-canvas').style.display = 'none';
-                
-                // 3. 메인 콘텐츠 부드럽게 등장 (끊김 방지 핵심)
+                const sections = ['#header', '#main', '#footer'];
                 sections.forEach(sel => {
                     const el = document.querySelector(sel);
                     if(el) {
@@ -289,8 +202,6 @@ of immersive computing and intelligent systems.
                         el.style.opacity = "1";
                     }
                 });
-
-                // 템플릿 메인 스크립트 실행
                 const script = document.createElement('script');
                 script.src = 'assets/js/main.js';
                 document.body.appendChild(script);
@@ -300,7 +211,7 @@ of immersive computing and intelligent systems.
 
     function renderLoop() {
         requestAnimationFrame(renderLoop);
-        if(points) points.rotation.y += 0.0015;
+        if(points) points.rotation.y += 0.0018;
         renderer.render(scene, camera);
     }
 
@@ -309,3 +220,5 @@ of immersive computing and intelligent systems.
         renderLoop();
     });
 </script>
+</body>
+</html>
