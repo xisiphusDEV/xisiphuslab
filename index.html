@@ -255,10 +255,11 @@ of immersive computing and intelligent systems.
         animatePoints();
     }
 
-    function animatePoints() {
+function animatePoints() {
         const positions = points.geometry.attributes.position.array;
         const tl = gsap.timeline({ onComplete: finishLoading });
 
+        // 1. 입자 수렴 (기존과 동일)
         for (let i = 0; i < particleCount; i++) {
             tl.to(currentCoords[i], {
                 duration: 3.5,
@@ -271,20 +272,59 @@ of immersive computing and intelligent systems.
                     positions[i * 3 + 1] = currentCoords[i].y;
                     positions[i * 3 + 2] = currentCoords[i].z;
                     points.geometry.attributes.position.needsUpdate = true;
-                    if(i === 0) {
-                        document.getElementById('x-val').innerText = currentCoords[i].x.toFixed(3);
-                        document.getElementById('y-val').innerText = currentCoords[i].y.toFixed(3);
-                        document.getElementById('z-val').innerText = currentCoords[i].z.toFixed(3);
-                    }
                 }
             }, 0);
         }
 
-        tl.to("body", { duration: 1.5, backgroundColor: "#ffffff", ease: "power2.inOut" }, "-=1.0");
-        tl.to(points.material, { duration: 1.0, opacity: 0, ease: "power2.in" }, "-=0.6");
-        tl.to("#loading-ui", { duration: 0.8, opacity: 0 }, "-=0.6");
+        // --- 여기서부터 디졸브 강화 핵심 ---
+        
+        // 2. 화이트 아웃을 더 길고 부드럽게 (1.5초 -> 2.5초)
+        // 입자가 완전히 사라지기 전부터 서서히 배경이 밝아집니다.
+        tl.to("body", { 
+            duration: 2.5, 
+            backgroundColor: "#ffffff", 
+            ease: "power1.inOut" 
+        }, "-=1.5");
+
+        // 3. 입자와 UI를 더 일찍, 천천히 사라지게 함
+        tl.to(points.material, { duration: 2.0, opacity: 0, ease: "none" }, "-=2.0");
+        tl.to("#loading-ui", { duration: 1.5, opacity: 0, ease: "power1.inOut" }, "-=1.8");
     }
 
+    function finishLoading() {
+        // 4. 캔버스(검은 배경+입자)와 실제 홈페이지 콘텐츠를 교차(Cross-fade) 시킵니다.
+        gsap.to("#webgl-canvas", { 
+            duration: 2.5, // 캔버스가 사라지는 시간을 늘려 디졸브 느낌 강조
+            opacity: 0, 
+            ease: "power1.inOut",
+            onStart: () => {
+                // 캔버스가 사라지기 시작할 때 이미 홈페이지 클래스를 제거하여
+                // 아래에 숨어있던 콘텐츠가 서서히 비치도록 합니다.
+                document.body.classList.remove('is-loading');
+                document.body.classList.remove('is-preload');
+                document.body.style.backgroundColor = ""; 
+
+                // 실제 섹션들이 올라오는 속도도 캔버스와 맞춤
+                const sections = ['#header', '#main', '#footer'];
+                sections.forEach(sel => {
+                    const el = document.querySelector(sel);
+                    if(el) {
+                        el.style.visibility = "visible";
+                        // CSS transition보다 GSAP으로 직접 제어하는 것이 더 부드럽습니다.
+                        gsap.to(el, { duration: 3.0, opacity: 1, ease: "power1.inOut" });
+                    }
+                });
+            },
+            onComplete: () => {
+                document.getElementById('webgl-canvas').style.display = 'none';
+                
+                // 메인 스크립트 실행
+                const script = document.createElement('script');
+                script.src = 'assets/js/main.js';
+                document.body.appendChild(script);
+            }
+        });
+    }
     function finishLoading() {
         gsap.to("#webgl-canvas", { 
             duration: 1.2, 
