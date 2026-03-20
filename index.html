@@ -9,19 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="XisiphusLAB builds XR, AI, and Digital Twin technologies for intelligent systems." />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <style>
-    /* 1. 로딩 캔버스: 화면 전체를 덮어 템플릿 내용을 가림 */
-    #webgl-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        background: #050505; /* 초기 카오스 상태의 어둠 */
-    }
+<style>
+    /* ... 기존 코드 생략 ... */
 
-    /* 2. 로딩 UI: 텍스트 및 좌표 정보 */
     #loading-ui {
         position: fixed;
         top: 0;
@@ -33,24 +23,30 @@
         align-items: center;
         z-index: 10000;
         pointer-events: none;
-        color: #00f2f2;
+        color: #98FF3D; /* 네온 그린 적용 */
         font-family: 'Courier New', monospace;
+        text-shadow: 0 0 10px rgba(152, 255, 61, 0.5);
     }
 
-    /* 3. 끊김 방지 핵심: 로딩 중에는 main.css의 설정을 무시하고 강제 숨김 */
-    body.is-loading #header, 
-    body.is-loading #main, 
-    body.is-loading #footer {
-        opacity: 0 !important;
-        visibility: hidden !important;
+    /* 이 부분을 수정합니다 */
+    .coord-overlay {
+        position: absolute; /* 중앙 정렬에서 벗어나 절대 좌표 사용 */
+        bottom: 30px;      /* 바닥에서 30px 띄움 */
+        right: 30px;       /* 우측에서 30px 띄움 */
+        font-size: 11px;
+        text-align: right;
+        line-height: 1.5;
+        opacity: 0.8;      /* 조금 더 선명하게 조정 */
+        letter-spacing: 1px;
     }
 
-    /* 4. 부드러운 등장: 전환 시 2초간 서서히 나타나도록 설정 */
-    #header, #main, #footer {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 2.0s ease-in-out, visibility 2.0s ease-in-out;
+    .status-box {
+        text-align: center;
+        letter-spacing: 0.2em;
+        /* 중앙에는 "SOLVING THE X..."만 남게 됩니다 */
     }
+
+    /* ... 기존 코드 생략 ... */
 </style>
 </head>
 
