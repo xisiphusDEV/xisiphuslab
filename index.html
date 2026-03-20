@@ -9,19 +9,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="XisiphusLAB builds XR, AI, and Digital Twin technologies for intelligent systems." />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        /* 로딩 연출을 위한 추가 스타일 */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: #050505;
+        }
+
+        #loading-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            pointer-events: none;
+            color: #00f2fe;
+            font-family: 'Courier New', monospace;
+        }
+
+        .status-box {
+            text-align: center;
+            letter-spacing: 0.2em;
+        }
+
+        .coord-overlay {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 10px;
+            text-align: right;
+            opacity: 0.6;
+        }
+
+        /* 초기 상태에서 메인 콘텐츠 숨김 */
+        body.is-loading #header, 
+        body.is-loading #main, 
+        body.is-loading #footer {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #header, #main, #footer {
+            transition: opacity 1.5s ease-in-out;
+        }
+    </style>
 </head>
 
-<body class="is-preload">
+<body class="is-preload is-loading">
 
-<!-- HERO -->
+<canvas id="webgl-canvas"></canvas>
+<div id="loading-ui">
+    <div class="status-box">
+        <div id="status-msg">SOLVING THE X...</div>
+    </div>
+    <div class="coord-overlay">
+        X_CORE_SYNC: <span id="x-val">0.000</span><br>
+        Y_CORE_SYNC: <span id="y-val">0.000</span><br>
+        Z_CORE_SYNC: <span id="z-val">0.000</span>
+    </div>
+</div>
+
 <section id="header">
     <div class="inner">
         <img src="images/logo_circle.png" alt="XisiphusLAB Logo" width="120">
         <h1>XisiphusLAB</h1>
             <p>
-            <!--Advancing Intelligent Systems <br>
-            through XR, Artificial Intelligence, <br>
-            and Digital Twin Technologies -->
             디지털 트윈 · 인공지능 · XR 기술을 기반으로<br>
             차세대 시뮬레이션 시스템을 연구합니다.
             </p><br>
@@ -31,10 +92,8 @@
     </div>
 </section>
 
-<!-- MAIN -->
 <section id="main">
 
-<!-- INTRO -->
 <header class="major container medium">
     <h2>
     Technology Research and Development<br>
@@ -43,25 +102,17 @@
     <p>
     XisiphusLAB explores emerging technologies that bridge the physical and digital worlds.<br>
     Our research focuses on immersive computing, intelligent systems, and digital simulations.
-    <!--
-    XisiphusLAB은 디지털 트윈과 시뮬레이션 기술을 중심으로 차세대 지능형 시스템을 연구하는 기술 연구 조직입니다.
-    가상환경과 실제 시스템을 연결하는 디지털 트윈 플랫폼, AI 기반 분석 기술, 그리고 XR 기반 시뮬레이션 환경을 연구하고 개발하고 있습니다.
-    -->
     </p>
 </header>
 
-<!-- SERVICES -->
 <div class="box alt container">
 
-<!-- XR -->
 <section class="feature left">
     <a class="image icon solid fa-vr-cardboard">
         <img src="images/pic01.jpg" alt="">
     </a>
-
     <div class="content">
         <h3>XR Development</h3>
-
         <p>
         We develop immersive applications using Virtual Reality, Augmented Reality,
         and Mixed Reality technologies. Our XR systems enable training,
@@ -70,105 +121,117 @@
     </div>
 </section>
 
-<!-- AI -->
 <section class="feature right">
     <a class="image icon solid fa-brain">
         <img src="images/pic02.jpg" alt="">
     </a>
-
     <div class="content">
         <h3>Artificial Intelligence</h3>
-
         <p>
         XisiphusLAB develops intelligent algorithms and AI-driven systems
         that enhance perception, decision-making, and automation.
-        Our work includes machine learning, data analysis, and intelligent interfaces.
         </p>
     </div>
 </section>
 
-<!-- DIGITAL TWIN -->
 <section class="feature left">
     <a class="image icon solid fa-network-wired">
         <img src="images/pic03.jpg" alt="">
     </a>
-
     <div class="content">
         <h3>Digital Twin Systems</h3>
-
         <p>
         We create digital replicas of real-world environments to simulate,
         monitor, and analyze complex systems.
-        Digital Twin technologies enable predictive insights
-        and smarter operational strategies.
         </p>
     </div>
 </section>
 
 </div>
 
-<!-- ABOUT -->
 <div class="box container">
-
 <header>
 <h2>About XisiphusLAB</h2>
 </header>
-
 <p>
 XisiphusLAB is a technology research initiative focused on the convergence
 of immersive computing and intelligent systems.
-
-Our goal is to explore innovative approaches that combine
-XR technologies, Artificial Intelligence, and Digital Twin platforms
-to solve real-world challenges.
-
-We believe that the future of computing lies in the seamless
-integration of physical and digital environments.
 </p>
-
 </div>
 
-<!-- CONTACT -->
 <div class="box container">
-
 <header>
 <h2>Contact</h2>
 </header>
-
-<p>
-We welcome collaboration opportunities, research partnerships,
-and technology discussions.
-</p>
-
 <ul>
 <li>Email: xisiphus@gmail.com</li>
 <li>Location: Republic of Korea</li>
 </ul>
-
 </div>
 
 </section>
 
-<!-- FOOTER -->
 <section id="footer">
-
 <ul class="icons">
 <li><a href="#" class="icon brands fa-github"></a></li>
 <li><a href="#" class="icon brands fa-linkedin"></a></li>
 </ul>
-
 <div class="copyright">
 <ul class="menu">
 <li>© 2025 XisiphusLAB</li>
 <li>Technology Research & Development</li>
 </ul>
 </div>
-
 </section>
 
-<!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/main.js"></script>
 
-</body>
-</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
+<script>
+    // --- XisiphusLAB 로딩 애니메이션 로직 ---
+    let scene, camera, renderer, points;
+    const particleCount = 4000;
+    const targetCoords = [];
+    const currentCoords = [];
+
+    function initXAnimation() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount; i++) {
+            // 초기 랜덤 배치 (Chaos)
+            positions[i * 3] = (Math.random() - 0.5) * 12;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+
+            currentCoords.push({ x: positions[i * 3], y: positions[i * 3 + 1], z: positions[i * 3 + 2] });
+
+            // 'X' 형태의 목표 좌표 (Order)
+            let tx, ty, tz;
+            if (i < particleCount * 0.5) {
+                tx = (Math.random() - 0.5) * 4;
+                ty = tx * 1.3;
+                tz = (Math.random() - 0.5) * 0.1;
+            } else {
+                tx = (Math.random() - 0.5) * 4;
+                ty = -tx * 1.3;
+                tz = (Math.random() - 0.5) * 0.1;
+            }
+            targetCoords.push({ x: tx, y: ty, z: tz });
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00f2fe, size: 0.015, transparent: true, blending: THREE.AddBlending });
+        points = new THREE.Points(geometry, material);
+        scene.add(points);
