@@ -193,12 +193,14 @@ of immersive computing and intelligent systems.
 <script src="assets/js/util.js"></script>
 
 <script>
+    // --- XisiphusLAB 로딩 애니메이션 로직 ---
     let scene, camera, renderer, points;
     const particleCount = 4000;
     const targetCoords = [];
     const currentCoords = [];
 
     function initXAnimation() {
+        // 장면 및 카메라 설정 (명리학적 수(水)의 깊이감을 위한 블랙 배경)
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 5;
@@ -215,11 +217,14 @@ of immersive computing and intelligent systems.
         const positions = new Float32Array(particleCount * 3);
 
         for (let i = 0; i < particleCount; i++) {
+            // 초기 랜덤 배치 (산업 데이터의 무질서함 상징)
             positions[i * 3] = (Math.random() - 0.5) * 12;
             positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
             positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+
             currentCoords.push({ x: positions[i * 3], y: positions[i * 3 + 1], z: positions[i * 3 + 2] });
 
+            // 'X' 형태의 목표 좌표 (미지수 X를 정답으로 치환하는 과정)
             let tx, ty, tz;
             if (i < particleCount * 0.5) {
                 tx = (Math.random() - 0.5) * 4;
@@ -234,7 +239,13 @@ of immersive computing and intelligent systems.
         }
 
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const material = new THREE.PointsMaterial({ color: 0x00f2fe, size: 0.015, transparent: true, blending: THREE.AddBlending });
+        // 네온 시안 컬러 적용 (기술적 혁신의 빛 상징)
+        const material = new THREE.PointsMaterial({ 
+            color: 0x00f2fe, 
+            size: 0.015, 
+            transparent: true, 
+            blending: THREE.AddBlending 
+        });
         points = new THREE.Points(geometry, material);
         scene.add(points);
 
@@ -243,11 +254,15 @@ of immersive computing and intelligent systems.
 
     function animatePoints() {
         const positions = points.geometry.attributes.position.array;
-        const tl = gsap.timeline({ onComplete: finishLoading });
+        // 애니메이션 완료 후 메인 화면 노출을 보장하는 타임라인
+        const tl = gsap.timeline({ 
+            onComplete: finishLoading,
+            delay: 0.5 
+        });
 
         for (let i = 0; i < particleCount; i++) {
             tl.to(currentCoords[i], {
-                duration: 2.5,
+                duration: 2.5 + Math.random() * 1.5,
                 x: targetCoords[i].x,
                 y: targetCoords[i].y,
                 z: targetCoords[i].z,
@@ -257,6 +272,8 @@ of immersive computing and intelligent systems.
                     positions[i * 3 + 1] = currentCoords[i].y;
                     positions[i * 3 + 2] = currentCoords[i].z;
                     points.geometry.attributes.position.needsUpdate = true;
+                    
+                    // 우측 하단 좌표 실시간 업데이트
                     if(i === 0) {
                         document.getElementById('x-val').innerText = currentCoords[i].x.toFixed(3);
                         document.getElementById('y-val').innerText = currentCoords[i].y.toFixed(3);
@@ -268,18 +285,30 @@ of immersive computing and intelligent systems.
     }
 
     function finishLoading() {
-        gsap.to("#loading-ui", { duration: 0.5, opacity: 0 });
+        // 1. 로딩 UI 페이드 아웃
+        gsap.to("#loading-ui", { duration: 0.5, opacity: 0, pointerEvents: "none" });
+        
+        // 2. 3D 캔버스 페이드 아웃 및 메인 콘텐츠 강제 노출
         gsap.to("#webgl-canvas", { 
             duration: 1.0, 
             opacity: 0, 
             onComplete: () => {
-                document.getElementById('webgl-canvas').style.display = 'none';
-                document.body.classList.remove('is-loading');
+                const canvas = document.getElementById('webgl-canvas');
+                if(canvas) canvas.style.display = 'none';
                 
-                // *** 핵심: 연출이 끝난 후 main.js를 동적으로 로드하여 실행 ***
-                const script = document.createElement('script');
-                script.src = 'assets/js/main.js';
-                document.body.appendChild(script);
+                // body의 클래스를 제거하여 CSS에 숨겨진 콘텐츠 표시
+                document.body.classList.remove('is-loading');
+                document.body.classList.remove('is-preload');
+                
+                // 인라인 스타일로 한 번 더 확실하게 노출
+                const sections = ['#header', '#main', '#footer'];
+                sections.forEach(sel => {
+                    const el = document.querySelector(sel);
+                    if(el) {
+                        el.style.opacity = "1";
+                        el.style.visibility = "visible";
+                    }
+                });
             }
         });
     }
@@ -290,6 +319,7 @@ of immersive computing and intelligent systems.
         renderer.render(scene, camera);
     }
 
+    // 문서 로드 완료 시 실행
     window.addEventListener('load', () => {
         initXAnimation();
         renderLoop();
