@@ -330,5 +330,24 @@ of immersive computing and intelligent systems.
                         el.style.transition = "opacity 1.5s ease-in-out, visibility 1.5s ease-in-out";
                     }
                 });
-</script>
+
                 // *** 핵심: 연출이 완전히 끝난 후 main.js를 동적으로 로드하여 실행 ***
+                const script = document.createElement('script');
+                script.src = 'assets/js/main.js';
+                document.body.appendChild(script);
+            }
+        });
+    }
+
+    function renderLoop() {
+        requestAnimationFrame(renderLoop);
+        if(points) points.rotation.y += 0.002; // 입체감 부여를 위한 미세한 회전
+        renderer.render(scene, camera);
+    }
+
+    // 문서 로드 완료 시 실행
+    window.addEventListener('load', () => {
+        initXAnimation();
+        renderLoop();
+    });
+</script>
