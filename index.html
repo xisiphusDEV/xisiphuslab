@@ -350,31 +350,7 @@ function animatePoints() {
             }
         });
     }
-    function finishLoading() {
-        gsap.to("#webgl-canvas", { 
-            duration: 1.2, 
-            opacity: 0, 
-            onStart: () => {
-                document.body.classList.remove('is-loading');
-                document.body.classList.remove('is-preload');
-                document.body.style.backgroundColor = ""; 
-            },
-            onComplete: () => {
-                document.getElementById('webgl-canvas').style.display = 'none';
-                const sections = ['#header', '#main', '#footer'];
-                sections.forEach(sel => {
-                    const el = document.querySelector(sel);
-                    if(el) {
-                        el.style.visibility = "visible";
-                        el.style.opacity = "1";
-                    }
-                });
-                const script = document.createElement('script');
-                script.src = 'assets/js/main.js';
-                document.body.appendChild(script);
-            }
-        });
-    }
+
 
     function renderLoop() {
         requestAnimationFrame(renderLoop);
